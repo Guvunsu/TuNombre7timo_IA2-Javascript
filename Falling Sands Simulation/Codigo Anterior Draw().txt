@@ -1,0 +1,71 @@
+let d=grid[i+gridSize];
+    temp_family.push(d);
+    let u=grid[i-gridSize];
+    temp_family.push(u);
+    let r=(col<gridSize-1)?grid[i+1]:null;
+    temp_family.push(r);
+    let l=(col>0)?grid[i-1]:null;
+    temp_family.push(l);
+    
+    //agua zone--------------------
+      if(grid[i].type=="water"&&!grid[i].visited){   
+        AnalizeFamily(i);
+
+        if(grid[i].type!="water") continue;
+        
+        //este es el movimiento hacia abajo
+        if(d!=null&&d.type=="void"){
+          WaterSimulation(i,gridSize,d,1);
+          ClearCell(i);
+        } 
+        // paso 4 .- aqui separamos la gota -------------------
+        let drop = grid[i];
+
+        if(r!=null && r.type == "void" && drop.state > 1){
+          grid[i+1]=new water(r.x,r.y,r.w,1);
+          grid[i+1].SetDirection(1);
+          grid[i+1]-SetDirtFlag(true);
+          drop.state--;
+        }
+          if(l!=null && r.type == "void" && drop.state > 1){
+          grid[i-1]=new water(l.x,l.y,l.w,1);
+          grid[i-1].SetDirection(-1);
+          grid[i-1]-SetDirtFlag(true);
+          drop.state--;
+        }
+      //-------------------------------------------------------
+        else{
+        if(grid[i].direction==1){
+          if(r!= null&&r.type=="void"){
+              WaterSimulation(i, 1, r);
+              ClearCell(i);
+            }else grid[i].SetDirection(-1);
+        }
+         if(grid[i].direction==-1){
+           if(l!= null&&l.type=="void"){
+             WaterSimulation(i,-1,l );
+             ClearCell(i);
+           }else grid[i].SetDirection(1);
+          }
+        } 
+      }
+    //agua zone--------------------------
+
+      // fire zone-------------------------
+        if(grid[i].type=="fire"&&!grid[i].visited){
+          //hacer que se condense el vapor al tocar el fuego 
+        }
+    // fire zone---------------------------------
+    
+    // steam zone--------------------------------
+       if(grid[i].type=="steam"&&!grid[i].visited){
+          // este es el movimiento hacia arriba del vapor
+         if(u!=null&&u.type=="void"){
+          SteamSimulator(i,gridSize,d,1);
+          ClearCell(i);
+          }else grid[i].SetDirection(-1);
+        }
+    // steam zone---------------------------------
+    
+        temp_family=[];
+  }   
